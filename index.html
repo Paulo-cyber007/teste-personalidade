@@ -3,12 +3,225 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste de Personalidade</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Teste de personalidade interativo para fins académicos.">
+<title>MindMirror | Descobre o Teu Perfil</title>
+<style>
+:root{--navy:#192348;--purple:#7567e8;--light:#f5f3ff;--ink:#292d49;--muted:#737891;--line:#e7e7f1}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f7fc;color:var(--ink);line-height:1.6}
+header{padding:17px 7%;background:white;border-bottom:1px solid var(--line);font-weight:bold;font-size:21px;color:var(--navy)}
+header span{color:var(--purple)}
+.hero{padding:65px 20px 75px;text-align:center;color:white;background:linear-gradient(135deg,#192348,#49417f 65%,#8879f5)}
+.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.hero h1{font-size:clamp(32px,6vw,55px);line-height:1.15;margin:17px auto;max-width:750px}
+.hero h1 span{color:#d5ceff}
+.hero p{max-width:580px;margin:auto;color:#e9e7ff}
+.pills{margin-top:25px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-size:13px}
+.pills span{padding:6px 12px;border:1px solid #ffffff55;border-radius:30px}
+main{max-width:850px;width:92%;margin:-30px auto 55px;position:relative}
+.card{background:white;border:1px solid var(--line);border-radius:19px;padding:clamp(20px,4vw,32px);margin-bottom:22px;box-shadow:0 10px 30px #2420440b}
+.heading{display:flex;align-items:flex-start;gap:13px;margin-bottom:23px}
+.number{background:#eeeaff;color:var(--purple);font-weight:bold;padding:8px 11px;border-radius:11px}
+h2{font-size:21px;color:var(--navy);margin:0}
+.heading p{font-size:14px;color:var(--muted);margin:4px 0 0}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.field{display:flex;flex-direction:column;gap:7px}
+.full{grid-column:1/-1}
+label{font-size:14px;font-weight:600}
+input[type=text],input[type=email],input[type=date]{width:100%;padding:12px;border:1px solid #dedfeb;border-radius:10px;font:inherit;background:white;color:var(--ink)}
+input:focus-visible,button:focus-visible{outline:3px solid #bdb4ff;outline-offset:2px}
+.hint{font-size:12px;color:var(--muted)}
+.question{padding:19px 0;border-bottom:1px solid var(--line)}
+.question:last-child{border:0;padding-bottom:0}
+.question h3{font-size:16px;margin:0 0 12px;color:var(--navy)}
+.qnum{color:var(--purple);font-size:12px;margin-right:7px}
+.options{display:grid;gap:9px}
+.option{position:relative}
+.option input{position:absolute;opacity:0}
+.option label{display:flex;align-items:center;gap:11px;border:1px solid var(--line);padding:12px;border-radius:11px;cursor:pointer;font-weight:normal}
+.option label:before{content:"";width:16px;height:16px;flex-shrink:0;border:1.5px solid #bcbcd0;border-radius:50%}
+.option input:checked+label{background:var(--light);border-color:var(--purple)}
+.option input:checked+label:before{border:5px solid var(--purple)}
+.option input:focus-visible+label{outline:3px solid #bdb4ff}
+.option label:hover{border-color:#aaa0f0}
+.consentbox{background:#faf9ff;border:1px solid #e5e0fb;padding:16px;border-radius:12px}
+.consentlabel{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.consentlabel input{width:18px;height:18px;flex-shrink:0;margin-top:3px;accent-color:var(--purple)}
+.terms{margin:12px 0 0 28px;font-size:11px;line-height:1.6;color:#666b82}
+.terms summary{cursor:pointer;color:#5146a3;font-weight:bold}
+.privacy{margin-top:15px;padding:12px;background:#eff8f3;border-radius:9px;color:#285b49;font-size:13px}
+button{font:inherit}
+.primary{display:block;margin:23px auto 0;padding:14px 23px;background:var(--purple);color:white;border:0;border-radius:11px;font-weight:bold;cursor:pointer}
+.primary:hover{background:#6254d0}
+.error{color:#a12b40;text-align:center;font-size:13px}
+.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:7px}
+.progress{height:6px;background:#eeeaf9;border-radius:10px;overflow:hidden;margin-bottom:12px}
+.progress div{height:100%;background:var(--purple);width:0;transition:width .2s}
+.result{display:none}
+.result.show{display:block}
+.resulttop{text-align:center;padding:15px 0}
+.emoji{font-size:53px}
+.resulttop h2{font-size:29px;margin:8px 0}
+.resulttype{color:var(--purple);font-weight:bold}
+.resultdesc{color:var(--muted)}
+.score{margin:12px 0}
+.scorelabel{display:flex;justify-content:space-between;font-size:13px}
+.bar{height:8px;background:#eeecf7;border-radius:8px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:linear-gradient(90deg,#7567e8,#b4a9ff)}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.secondary{padding:11px 17px;border:1px solid var(--line);border-radius:10px;background:white;cursor:pointer}
+footer{text-align:center;background:white;border-top:1px solid var(--line);padding:25px;color:var(--muted);font-size:13px}
+footer strong{color:var(--navy)}
+@media(max-width:580px){.fields{grid-template-columns:1fr}.full{grid-column:auto}.hero{padding:48px 18px 60px}.card{border-radius:15px}}
+@media print{header,.hero,#personal,#questions,#consentsection,footer,.actions{display:none!important}main{margin:0;width:100%}.result{display:block!important}}
+</style>
 </head>
 <body>
-    <h1>Bem-vindo ao Teste de Personalidade!</h1>
-    <p>Este é o meu primeiro projeto de desenvolvimento web.</p>
+<header>✳ mindmirror<span>.</span></header>
+<section class="hero">
+<div class="eyebrow">✦ O teu espaço de descoberta</div>
+<h1>Descobre o teu <span>perfil psicológico.</span></h1>
+<p>Faz uma pausa, responde intuitivamente e descobre qual das quatro tendências melhor representa as tuas respostas.</p>
+<div class="pills"><span>◷ 3 minutos</span><span>✧ 5 perguntas</span><span>♡ Autoconhecimento</span></div>
+</section>
+<main>
+<form id="quiz">
+<section class="card" id="personal">
+<div class="heading"><div class="number">01</div><div><h2>Primeiro, fala-nos de ti</h2><p>Preenche os campos para personalizar a experiência.</p></div></div>
+<div class="fields">
+<div class="field full"><label for="name">Nome</label><input id="name" name="name" type="text" placeholder="O teu primeiro nome" maxlength="80" required></div>
+<div class="field"><label for="email">Endereço de email</label><input id="email" name="email" type="email" placeholder="tu@exemplo.pt" maxlength="254" required></div>
+<div class="field"><label for="birthdate">Data de nascimento</label><input id="birthdate" name="birthdate" type="date" required></div>
+<div class="hint full">Dados de demonstração: o código não envia estas informações para um servidor.</div>
+</div>
+</section>
+<section class="card" id="questions">
+<div class="heading"><div class="number">02</div><div><h2>Como funciona a tua mente?</h2><p>Escolhe uma resposta em cada pergunta. Não existem respostas certas ou erradas.</p></div></div>
+<div class="progress-label"><span>O teu progresso</span><span id="progressText">0 de 5 respondidas</span></div>
+<div class="progress" id="progress" role="progressbar" aria-label="Progresso das respostas" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div id="progressFill"></div></div>
+<div class="question"><h3><span class="qnum">01 / 05</span>Quando surge um desafio novo, tu...</h3><div class="options">
+<div class="option"><input id="q1a" type="radio" name="q1" value="A" required><label for="q1a">Analiso os detalhes antes de agir.</label></div>
+<div class="option"><input id="q1b" type="radio" name="q1" value="B"><label for="q1b">Imagino possibilidades e ideias diferentes.</label></div>
+<div class="option"><input id="q1c" type="radio" name="q1" value="C"><label for="q1c">Converso com outras pessoas.</label></div>
+<div class="option"><input id="q1d" type="radio" name="q1" value="D"><label for="q1d">Experimento logo e aprendo pelo caminho.</label></div>
+</div></div>
+<div class="question"><h3><span class="qnum">02 / 05</span>Num dia livre, preferes...</h3><div class="options">
+<div class="option"><input id="q2a" type="radio" name="q2" value="A" required><label for="q2a">Ler, refletir ou aprender algo novo.</label></div>
+<div class="option"><input id="q2b" type="radio" name="q2" value="B"><label for="q2b">Criar algo ou imaginar histórias.</label></div>
+<div class="option"><input id="q2c" type="radio" name="q2" value="C"><label for="q2c">Estar com amigos e conhecer pessoas.</label></div>
+<div class="option"><input id="q2d" type="radio" name="q2" value="D"><label for="q2d">Explorar um lugar ou atividade nova.</label></div>
+</div></div>
+<div class="question"><h3><span class="qnum">03 / 05</span>Quando trabalhas em grupo, normalmente...</h3><div class="options">
+<div class="option"><input id="q3a" type="radio" name="q3" value="A" required><label for="q3a">Organizo as tarefas e procuro coerência.</label></div>
+<div class="option"><input id="q3b" type="radio" name="q3" value="B"><label for="q3b">Trago ideias originais para a equipa.</label></div>
+<div class="option"><input id="q3c" type="radio" name="q3" value="C"><label for="q3c">Ajudo a manter a harmonia e a comunicação.</label></div>
+<div class="option"><input id="q3d" type="radio" name="q3" value="D"><label for="q3d">Transformo os planos em ação.</label></div>
+</div></div>
+<div class="question"><h3><span class="qnum">04 / 05</span>Perante uma decisão importante, valorizas mais...</h3><div class="options">
+<div class="option"><input id="q4a" type="radio" name="q4" value="A" required><label for="q4a">Os factos, a lógica e as consequências.</label></div>
+<div class="option"><input id="q4b" type="radio" name="q4" value="B"><label for="q4b">A criatividade e as novas oportunidades.</label></div>
+<div class="option"><input id="q4c" type="radio" name="q4" value="C"><label for="q4c">Os sentimentos e o impacto nos outros.</label></div>
+<div class="option"><input id="q4d" type="radio" name="q4" value="D"><label for="q4d">A experiência e os resultados práticos.</label></div>
+</div></div>
+<div class="question"><h3><span class="qnum">05 / 05</span>O que te dá mais satisfação?</h3><div class="options">
+<div class="option"><input id="q5a" type="radio" name="q5" value="A" required><label for="q5a">Resolver um problema complexo.</label></div>
+<div class="option"><input id="q5b" type="radio" name="q5" value="B"><label for="q5b">Dar vida a uma ideia original.</label></div>
+<div class="option"><input id="q5c" type="radio" name="q5" value="C"><label for="q5c">Ajudar alguém a sentir-se compreendido.</label></div>
+<div class="option"><input id="q5d" type="radio" name="q5" value="D"><label for="q5d">Concluir um objetivo concreto.</label></div>
+</div></div>
+</section>
+<section class="card" id="consentsection">
+<div class="heading"><div class="number">03</div><div><h2>Termos de Utilização</h2><p>Consulta as condições antes de continuares.</p></div></div>
+<div class="consentbox">
+<label class="consentlabel" for="consent"><input id="consent" type="checkbox" required><span>Li e aceito os Termos de Utilização e a Política de Privacidade desta demonstração académica.</span></label>
+<details class="terms"><summary>Ler os termos e a política de privacidade</summary>
+<p><strong>Finalidade:</strong> este projeto demonstra a criação de formulários, interfaces web e mecanismos de consentimento para fins educativos.</p>
+<p><strong>Dados pessoais:</strong> o formulário solicita nome, email e data de nascimento para ilustrar campos de recolha. Nesta versão, os dados não são enviados para um servidor nem guardados numa base de dados. O cálculo do resultado ocorre localmente no navegador.</p>
+<p><strong>Consentimento simulado:</strong> ao marcar a caixa, confirmas que leste as condições e aceitas a simulação de tratamento local dos dados introduzidos nesta demonstração. Não existe partilha efetiva de dados pelo código.</p>
+<p><strong>Privacidade:</strong> num serviço real, o responsável pelo tratamento teria de informar sobre as finalidades, a base legal, os prazos de conservação, os destinatários e os direitos dos titulares.</p>
+<p><strong>Limitações:</strong> o resultado é lúdico, não é um diagnóstico nem uma avaliação psicológica validada.</p>
+</details>
+</div>
+<div class="privacy">🔒 <strong>Privacidade:</strong> este projeto não transmite os dados introduzidos para um servidor.</div>
+<button class="primary" type="submit">Descobrir o meu perfil →</button>
+<p class="error" id="error" role="alert" aria-live="polite"></p>
+</section>
+</form>
+<section class="card result" id="result" tabindex="-1" aria-live="polite">
+<div class="resulttop"><div class="emoji" id="resultEmoji">✨</div><p style="color:#7567e8;font-weight:bold;letter-spacing:1px">O TEU RESULTADO</p><h2 id="resultTitle">O teu perfil</h2><div class="resulttype" id="resultType"></div><p class="resultdesc" id="resultDescription"></p></div>
+<h3>A tendência das tuas respostas</h3><div id="scores"></div>
+<p class="hint">Este resultado é lúdico e não constitui uma avaliação psicológica validada.</p>
+<div class="actions"><button class="primary" id="restart" type="button">↻ Recomeçar</button><button class="secondary" id="print" type="button">Imprimir resultado</button></div>
+</section>
+</main>
+<footer><strong>mindmirror.</strong><br>Projeto académico de Desenvolvimento Web e Padrões de Interface.</footer>
+<script>
+(function(){
+"use strict";
+const form=document.getElementById("quiz");
+const qs=["q1","q2","q3","q4","q5"];
+const profiles={
+A:{emoji:"🔎",title:"O Analista",desc:"Valorizas a lógica, a reflexão e a compreensão dos detalhes. Gostas de tomar decisões ponderadas.",label:"Pensamento analítico"},
+B:{emoji:"🎨",title:"O Criativo",desc:"Gostas de imaginar possibilidades e explorar ideias originais. A criatividade pode ser uma das tuas motivações.",label:"Imaginação e criatividade"},
+C:{emoji:"💜",title:"O Conector",desc:"Dás importância às relações, à empatia e à colaboração. Compreender as pessoas é importante para ti.",label:"Empatia e colaboração"},
+D:{emoji:"🚀",title:"O Explorador",desc:"Gostas de experimentar, passar à ação e alcançar objetivos concretos. Aprender pela experiência motiva-te.",label:"Ação e iniciativa"}
+};
+function updateProgress(){
+const n=qs.filter(q=>form.querySelector('input[name="'+q+'"]:checked')).length;
+document.getElementById("progressText").textContent=n+" de 5 respondidas";
+document.getElementById("progressFill").style.width=(n/5*100)+"%";
+document.getElementById("progress").setAttribute("aria-valuenow",String(n));
+}
+form.addEventListener("change",function(e){
+if(e.target.matches('input[type="radio"]'))updateProgress();
+if(e.target.id==="consent")document.getElementById("error").textContent="";
+});
+form.addEventListener("submit",function(e){
+e.preventDefault();
+const error=document.getElementById("error");
+error.textContent="";
+if(!form.reportValidity())return;
+if(!document.getElementById("consent").checked){
+error.textContent="Para continuar, tens de aceitar os termos desta demonstração.";
+document.getElementById("consent").focus();
+return;
+}
+const answers=qs.map(q=>form.querySelector('input[name="'+q+'"]:checked').value);
+const counts={A:0,B:0,C:0,D:0};
+answers.forEach(a=>counts[a]++);
+const winner=["A","B","C","D"].reduce((best,k)=>counts[k]>counts[best]?k:best,"A");
+const p=profiles[winner];
+const name=document.getElementById("name").value.trim();
+document.getElementById("resultEmoji").textContent=p.emoji;
+document.getElementById("resultTitle").textContent=name?"Este é o teu perfil, "+name+"!":"Este é o teu perfil!";
+document.getElementById("resultType").textContent=p.title+" · "+p.label;
+document.getElementById("resultDescription").textContent=p.desc;
+const scores=document.getElementById("scores");
+scores.replaceChildren();
+["A","B","C","D"].forEach(k=>{
+const row=document.createElement("div");row.className="score";
+const label=document.createElement("div");label.className="scorelabel";
+const title=document.createElement("span");title.textContent=profiles[k].emoji+" "+profiles[k].title;
+const amount=document.createElement("strong");amount.textContent=counts[k]+" de 5";
+label.append(title,amount);
+const bar=document.createElement("div");bar.className="bar";
+const fill=document.createElement("div");fill.style.width=(counts[k]/5*100)+"%";
+bar.appendChild(fill);row.append(label,bar);scores.appendChild(row);
+});
+const result=document.getElementById("result");
+result.classList.add("show");result.focus();result.scrollIntoView({behavior:"smooth",block:"start"});
+});
+document.getElementById("restart").addEventListener("click",function(){
+form.reset();updateProgress();document.getElementById("error").textContent="";
+document.getElementById("result").classList.remove("show");
+form.scrollIntoView({behavior:"smooth",block:"start"});
+});
+document.getElementById("print").addEventListener("click",function(){window.print();});
+document.getElementById("birthdate").max=new Date().toISOString().slice(0,10);
+updateProgress();
+})();
+</script>
 </body>
 </html>
